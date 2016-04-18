@@ -1,12 +1,5 @@
-var split = require("split");
-var through2 = require("through2");
-var even = false;
+var concat = require("concat-stream");
 
-process.stdin.pipe(split()).pipe(through2(function (buffer, _, next) {
-  if( even )
-    this.push(buffer.toString().toUpperCase() + "\n");
-  else
-    this.push(buffer.toString().toLowerCase() + "\n");
-  even = !even;
-  next();
-})).pipe(process.stdout);
+process.stdin.pipe(concat(function (buf) {
+  console.log(buf.toString().split("").reverse().join(""));
+}));
