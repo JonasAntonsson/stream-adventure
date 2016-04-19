@@ -1,5 +1,15 @@
-var concat = require("concat-stream");
+var http = require("http");
+var through = require("through2");
 
-process.stdin.pipe(concat(function (buf) {
-  console.log(buf.toString().split("").reverse().join(""));
-}));
+var tr = through(function (buf, _, next) {
+  this.push(buf.toString().toUpperCase());
+  next();
+});
+
+http.createServer(function (req, res) {
+  if (req.method === "POST") {
+    req.pipe(tr).pipe(res);
+  } else {
+    res.end();
+  }
+}).listen(Number(process.argv[2]));
